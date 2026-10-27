@@ -5,20 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#141923">
   <title>Claude Opus 5.5 — Chat</title>
-  <style>
-    :root {
-      color-scheme: dark;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
-    }
 
+  <style>
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      padding: 24px 14px;
-      background: radial-gradient(circle at top, #222d42 0, #141923 48%, #0e1118 100%);
+      padding: 20px 12px;
+      background: radial-gradient(circle at top, #222d42, #141923 55%, #0e1118);
       color: #f2f4f8;
+      font-family: Inter, system-ui, sans-serif;
     }
 
     main {
@@ -27,58 +24,39 @@
       padding: 22px;
       border: 1px solid #343b4e;
       border-radius: 18px;
-      background: rgba(22, 27, 37, .96);
-      box-shadow: 0 18px 60px rgba(0,0,0,.28);
+      background: #161b25;
+      box-shadow: 0 18px 60px #0005;
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(1.45rem, 4vw, 2rem);
-      letter-spacing: -.03em;
+      font-size: clamp(1.5rem, 4vw, 2rem);
     }
 
     .subtitle {
-      margin: 8px 0 18px;
       color: #aeb5c8;
-      font-size: .94rem;
+      font-size: .93rem;
       line-height: 1.5;
-    }
-
-    .topline {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .model-badge {
-      font-size: .78rem;
-      color: #d8e4ff;
-      background: #263652;
-      border: 1px solid #3e547b;
-      padding: 6px 9px;
-      border-radius: 999px;
-      white-space: nowrap;
+      margin: 8px 0 18px;
     }
 
     #chat {
       min-height: 300px;
-      max-height: 56vh;
+      max-height: 55vh;
       overflow-y: auto;
+      padding: 14px;
       background: #1a1f2b;
       border: 1px solid #343b4e;
       border-radius: 14px;
-      padding: 14px;
     }
 
     .message {
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      line-height: 1.55;
       padding: 12px;
       margin-bottom: 12px;
       border-radius: 10px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
     }
 
     .message:last-child { margin-bottom: 0; }
@@ -87,36 +65,33 @@
 
     .label {
       display: block;
+      margin-bottom: 6px;
       color: #a8c6ff;
       font-weight: 700;
-      margin-bottom: 6px;
       font-size: .9rem;
     }
 
     textarea {
+      display: block;
       width: 100%;
-      margin-top: 14px;
       min-height: 105px;
-      resize: vertical;
+      margin-top: 14px;
       padding: 14px;
+      resize: vertical;
       background: #1a1f2b;
       color: white;
       border: 1px solid #414a60;
       border-radius: 12px;
       font: inherit;
-      line-height: 1.5;
       outline: none;
     }
 
-    textarea:focus {
-      border-color: #83a8ee;
-      box-shadow: 0 0 0 3px rgba(131,168,238,.12);
-    }
+    textarea:focus { border-color: #83a8ee; }
 
     .buttons {
       display: flex;
+      gap: 9px;
       flex-wrap: wrap;
-      gap: 8px;
       margin-top: 10px;
     }
 
@@ -145,55 +120,30 @@
     }
 
     #status {
-      color: #aeb5c8;
-      margin-top: 12px;
       min-height: 22px;
-      font-size: .9rem;
-      line-height: 1.45;
-    }
-
-    .footnote {
-      color: #858da1;
-      font-size: .78rem;
       margin-top: 12px;
-      line-height: 1.45;
+      color: #aeb5c8;
+      font-size: .9rem;
+      line-height: 1.5;
     }
 
     @media (max-width: 600px) {
-      body { padding: 10px 8px; }
-      main { padding: 14px; border-radius: 14px; }
-
-      #chat {
-        min-height: 250px;
-        max-height: 58vh;
-        padding: 10px;
-      }
-
+      body { padding: 10px 7px; }
+      main { padding: 13px; }
+      #chat { min-height: 250px; padding: 9px; }
       .message { padding: 10px; }
-      button { flex: 1; padding: 12px 10px; }
-
-      .topline {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 8px;
-      }
+      button { flex: 1; }
     }
   </style>
 </head>
 
 <body>
   <main>
-    <div class="topline">
-      <div>
-        <h1>Claude Opus 5.5</h1>
-        <div class="subtitle">
-          Чат для программирования, Roblox Studio и Luau.
-          История сохраняется в этом браузере; при недоступности
-          основной модели сайт попробует резервную модель, если она доступна.
-        </div>
-      </div>
+    <h1>Claude Opus 5.5</h1>
 
-      <div class="model-badge" id="modelBadge">Основная модель</div>
+    <div class="subtitle">
+      ИИ-помощник для программирования, Roblox Studio и Luau.
+      История сохраняется в этом браузере.
     </div>
 
     <div id="chat" aria-live="polite"></div>
@@ -210,11 +160,6 @@
     </div>
 
     <div id="status" role="status"></div>
-
-    <div class="footnote">
-      История хранится локально в браузере на этом устройстве.
-      Не отправляй в чат пароли, токены или личные данные.
-    </div>
   </main>
 
   <script src="https://js.puter.com/v2/"></script>
@@ -223,76 +168,63 @@
     (() => {
       "use strict";
 
-      const PRIMARY_MODEL = "anthropic/claude-opus-5-5";
-      const PRIMARY_SHORT_ID = "claude-opus-5-5";
-
-      const STORAGE_KEY = "opus55_chat_history_v2";
-      const MAX_HISTORY_MESSAGES = 100;
-      const MODEL_CONTEXT_MESSAGES = 40;
+      const MODEL = "anthropic/claude-opus-5-5";
+      const STORAGE_KEY = "opus55_chat_history_v3";
+      const MAX_HISTORY = 100;
+      const CONTEXT_LENGTH = 40;
 
       const chat = document.getElementById("chat");
       const promptBox = document.getElementById("prompt");
       const sendButton = document.getElementById("send");
       const clearButton = document.getElementById("clear");
       const status = document.getElementById("status");
-      const modelBadge = document.getElementById("modelBadge");
 
       let busy = false;
-      let modelCatalogPromise = null;
-      let modelCatalog = [];
-      let currentModelId = PRIMARY_MODEL;
       let history = loadHistory();
 
-      // Загружает сохранённую переписку.
       function loadHistory() {
         try {
-          const saved = JSON.parse(
+          const data = JSON.parse(
             localStorage.getItem(STORAGE_KEY) || "[]"
           );
 
-          if (!Array.isArray(saved)) return [];
+          if (!Array.isArray(data)) return [];
 
-          return saved
+          return data
             .filter(item =>
               item &&
-              (item.role === "user" || item.role === "assistant") &&
+              ["user", "assistant"].includes(item.role) &&
               typeof item.text === "string"
             )
-            .slice(-MAX_HISTORY_MESSAGES)
-            .map(item => ({
-              role: item.role,
-              text: item.text
-            }));
+            .slice(-MAX_HISTORY);
         } catch (_) {
           return [];
         }
       }
 
-      // Сохраняет переписку в браузере.
       function saveHistory() {
-        try {
-          history = history.slice(-MAX_HISTORY_MESSAGES);
+        history = history.slice(-MAX_HISTORY);
 
+        try {
           localStorage.setItem(
             STORAGE_KEY,
             JSON.stringify(history)
           );
         } catch (_) {
           status.textContent =
-            "Не получилось сохранить историю в браузере. " +
-            "Чат продолжит работать до закрытия страницы.";
+            "Не удалось сохранить историю в браузере.";
         }
       }
 
-      function addBubble(role, text, labelOverride) {
+      function addMessage(role, text) {
         const bubble = document.createElement("div");
         bubble.className = "message " + role;
 
         const label = document.createElement("span");
         label.className = "label";
-        label.textContent =
-          labelOverride ||
-          (role === "user" ? "Ты" : "Помощник");
+        label.textContent = role === "user"
+          ? "Ты"
+          : "Claude / ИИ";
 
         const content = document.createElement("div");
         content.textContent = text;
@@ -304,189 +236,29 @@
         return content;
       }
 
-      function addSavedMessage(role, text) {
-        history.push({ role, text });
-
-        if (history.length > MAX_HISTORY_MESSAGES) {
-          history = history.slice(-MAX_HISTORY_MESSAGES);
-        }
-
-        saveHistory();
-      }
-
       function renderHistory() {
         chat.replaceChildren();
 
         if (history.length === 0) {
-          addBubble(
+          addMessage(
             "assistant",
-            "Привет! Напиши задачу, и я помогу разобраться."
+            "Привет! Напиши свой вопрос, и начнём."
           );
           return;
         }
 
         for (const item of history) {
-          addBubble(item.role, item.text);
+          addMessage(item.role, item.text);
         }
       }
 
-      function isPrimaryModel(modelId) {
-        return typeof modelId === "string" && (
-          modelId === PRIMARY_MODEL ||
-          modelId === PRIMARY_SHORT_ID ||
-          modelId.endsWith("/" + PRIMARY_SHORT_ID)
-        );
+      function saveMessage(role, text) {
+        history.push({ role, text });
+        saveHistory();
       }
 
-      function modelName(modelId) {
-        if (isPrimaryModel(modelId)) {
-          return "Claude Opus 5.5";
-        }
-
-        const found = modelCatalog.find(
-          model => model && model.id === modelId
-        );
-
-        return found?.name || modelId;
-      }
-
-      // Получает каталог моделей, если API его поддерживает.
-      async function getModelCatalog() {
-        if (!modelCatalogPromise) {
-          modelCatalogPromise = (async () => {
-            try {
-              const result = await puter.ai.listModels();
-
-              modelCatalog = Array.isArray(result)
-                ? result
-                : [];
-
-              return modelCatalog;
-            } catch (_) {
-              modelCatalog = [];
-              return [];
-            }
-          })();
-        }
-
-        return modelCatalogPromise;
-      }
-
-      // Основная модель + ограниченное число резервных моделей.
-      async function getModelCandidates() {
-        const models = await getModelCatalog();
-
-        const primaryEntry = models.find(model =>
-          model && (
-            isPrimaryModel(model.id) ||
-            (
-              Array.isArray(model.aliases) &&
-              model.aliases.some(alias => isPrimaryModel(alias))
-            )
-          )
-        );
-
-        const primaryId = primaryEntry?.id || PRIMARY_MODEL;
-        const candidates = [primaryId];
-
-        // Используем только модели, которые каталог пометил :free.
-        // Такая пометка не гарантирует доступность или отсутствие лимитов.
-        const freeModels = models.filter(model =>
-          model &&
-          typeof model.id === "string" &&
-          /:free$/i.test(model.id) &&
-          model.id !== primaryId
-        );
-
-        const preference = [
-          /gemini.*flash/i,
-          /deepseek/i,
-          /gpt-oss/i,
-          /qwen/i,
-          /llama/i
-        ];
-
-        const ordered = [];
-
-        for (const pattern of preference) {
-          const match = freeModels.find(model =>
-            pattern.test(model.id) ||
-            pattern.test(model.name || "")
-          );
-
-          if (
-            match &&
-            !ordered.some(item => item.id === match.id)
-          ) {
-            ordered.push(match);
-          }
-        }
-
-        for (const model of freeModels) {
-          if (!ordered.some(item => item.id === model.id)) {
-            ordered.push(model);
-          }
-        }
-
-        for (const model of ordered.slice(0, 4)) {
-          if (!candidates.includes(model.id)) {
-            candidates.push(model.id);
-          }
-        }
-
-        return candidates;
-      }
-
-      function readError(error) {
-        return {
-          status: Number(
-            error?.status ||
-            error?.statusCode ||
-            error?.response?.status ||
-            0
-          ),
-
-          code: String(
-            error?.code ||
-            error?.error?.code ||
-            ""
-          ),
-
-          message: String(
-            error?.message ||
-            error?.error?.message ||
-            error ||
-            "Неизвестная ошибка"
-          )
-        };
-      }
-
-      function isOverallLimit(error) {
-        const detail = readError(error);
-
-        const combined = (
-          detail.code + " " + detail.message
-        ).toLowerCase();
-
-        return detail.status === 402 ||
-          detail.status === 429 ||
-          /insufficient_funds|too_many_requests|rate.?limit|quota|insufficient.*credit|no.?credits|usage.*limit|monthly.*limit|budget exhausted/.test(combined);
-      }
-
-      function shouldTryFallback(error) {
-        if (isOverallLimit(error)) return false;
-
-        const detail = readError(error);
-        const combined = (
-          detail.code + " " + detail.message
-        ).toLowerCase();
-
-        return detail.status >= 500 ||
-          detail.status === 404 ||
-          /model.*(not found|unavailable|unsupported|not available)|provider|upstream|temporarily unavailable|overloaded|invalid model/.test(combined);
-      }
-
-      // ИСПРАВЛЕНИЕ: content может быть строкой ИЛИ массивом.
+      // Главное исправление: content может быть строкой,
+      // массивом текстовых блоков или null.
       function extractAnswer(response) {
         const content = response?.message?.content;
 
@@ -496,85 +268,30 @@
 
         if (Array.isArray(content)) {
           return content
-            .map(part =>
-              typeof part === "string"
-                ? part
-                : (part?.text || "")
-            )
+            .map(part => {
+              if (typeof part === "string") {
+                return part;
+              }
+
+              if (
+                part &&
+                typeof part.text === "string"
+              ) {
+                return part.text;
+              }
+
+              return "";
+            })
             .filter(Boolean)
             .join("\n")
             .trim();
         }
 
-        // Дополнительная поддержка возможных форматов ответа.
         if (typeof response?.text === "string") {
           return response.text.trim();
         }
 
-        if (
-          typeof response?.message?.content?.text === "string"
-        ) {
-          return response.message.content.text.trim();
-        }
-
         return "";
-      }
-
-      async function askWithFallback(messages) {
-        const candidates = await getModelCandidates();
-        let lastError = null;
-
-        for (
-          let index = 0;
-          index < candidates.length;
-          index++
-        ) {
-          const modelId = candidates[index];
-
-          try {
-            if (index === 0) {
-              status.textContent =
-                "Отправляю запрос в Claude Opus 5.5...";
-            } else {
-              status.textContent =
-                "Основная модель недоступна. " +
-                "Пробую резервную: " +
-                modelName(modelId) + "...";
-            }
-
-            const response = await puter.ai.chat(messages, {
-              model: modelId,
-              normalize: true
-            });
-
-            const answer = extractAnswer(response);
-
-            if (!answer) {
-              throw new Error(
-                "Модель вернула пустой ответ или неизвестный формат."
-              );
-            }
-
-            return { answer, modelId };
-
-          } catch (error) {
-            lastError = error;
-
-            // Общую квоту сервиса переключением модели не обойти.
-            if (isOverallLimit(error)) {
-              throw error;
-            }
-
-            if (
-              !shouldTryFallback(error) ||
-              index === candidates.length - 1
-            ) {
-              throw error;
-            }
-          }
-        }
-
-        throw lastError || new Error("Нет доступной модели.");
       }
 
       async function sendMessage() {
@@ -585,91 +302,72 @@
 
         if (
           typeof puter === "undefined" ||
-          !puter.ai?.chat
+          !puter.ai ||
+          typeof puter.ai.chat !== "function"
         ) {
           status.textContent =
-            "Не загрузился Puter.js. Проверь подключение " +
-            "к интернету и обнови страницу.";
+            "Puter.js не загрузился. Проверь интернет и обнови страницу.";
           return;
         }
 
         busy = true;
         sendButton.disabled = true;
-
         promptBox.value = "";
 
-        addBubble("user", text);
-        addSavedMessage("user", text);
+        addMessage("user", text);
+        saveMessage("user", text);
 
-        const answerBox = addBubble(
+        const answerBox = addMessage(
           "assistant",
           "Думаю над ответом..."
         );
 
-        const recentHistory = history
-          .slice(-MODEL_CONTEXT_MESSAGES)
-          .map(item => ({
-            role: item.role,
-            content: item.text
-          }));
-
-        const messages = [
-          {
-            role: "system",
-            content:
-              "Ты полезный ИИ-помощник. Отвечай на русском " +
-              "языке, помогай с программированием, особенно " +
-              "Roblox Studio и Luau. Учитывай контекст предыдущих " +
-              "сообщений. Если меняешь код, по возможности выдавай " +
-              "полный готовый вариант и сохраняй уже работающие функции."
-          },
-          ...recentHistory
-        ];
+        status.textContent = "Отправляю запрос модели...";
 
         try {
-          const result = await askWithFallback(messages);
+          const messages = [
+            {
+              role: "system",
+              content:
+                "Ты полезный ИИ-помощник. Отвечай на русском языке. " +
+                "Особенно хорошо помогай с Roblox Studio, Luau и программированием. " +
+                "Учитывай предыдущие сообщения. При изменении кода сохраняй " +
+                "работающие функции и по возможности давай полный готовый код."
+            },
+            ...history.slice(-CONTEXT_LENGTH).map(item => ({
+              role: item.role,
+              content: item.text
+            }))
+          ];
 
-          currentModelId = result.modelId;
+          const response = await puter.ai.chat(messages, {
+            model: MODEL,
+            normalize: true
+          });
 
-          const usedName = modelName(result.modelId);
+          const answer = extractAnswer(response);
 
-          answerBox.textContent = result.answer;
-          addSavedMessage("assistant", result.answer);
-
-          if (isPrimaryModel(result.modelId)) {
-            modelBadge.textContent = "Claude Opus 5.5";
-            status.textContent =
-              "Ответ получен от Claude Opus 5.5.";
-          } else {
-            modelBadge.textContent = "Резервная модель";
-            status.textContent =
-              "Ответ получен от резервной модели: " +
-              usedName + ".";
+          if (!answer) {
+            throw new Error(
+              "Модель не вернула текст. Попробуй ещё раз."
+            );
           }
+
+          answerBox.textContent = answer;
+          saveMessage("assistant", answer);
+
+          status.textContent = "Ответ получен.";
 
         } catch (error) {
-          const detail = readError(error);
+          const errorText = String(
+            error?.message || error || "Неизвестная ошибка"
+          );
 
-          if (isOverallLimit(error)) {
-            answerBox.textContent =
-              "Лимит Puter достигнут. Переключение модели " +
-              "не гарантирует продолжение, потому что общие " +
-              "лимиты применяются к аккаунту/приложению. " +
-              "История сохранена — попробуй позже.";
+          answerBox.textContent =
+            "Не удалось получить ответ.\n\n" + errorText;
 
-            status.textContent =
-              "Достигнут общий лимит сервиса (" +
-              (detail.code || detail.status || "лимит") + ").";
-
-          } else {
-            answerBox.textContent =
-              "Не удалось получить ответ. История сохранена.\n\n" +
-              detail.message;
-
-            status.textContent =
-              "Запрос не прошёл. Проверь подключение " +
-              "и доступность моделей.";
-          }
+          status.textContent =
+            "История сохранена. Проверь доступность модели Puter.";
 
         } finally {
           busy = false;
@@ -705,7 +403,6 @@
       });
 
       renderHistory();
-      modelBadge.textContent = "Claude Opus 5.5";
     })();
   </script>
 </body>
