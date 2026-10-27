@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Opus 5.5 — Chat</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #10131b;
+      color: #f4f5fa;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 24px 12px;
+    }
+
+    main {
+      width: 100%;
+      max-width: 780px;
+    }
+
+    h1 {
+      font-size: 27px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: #aeb5c8;
+      margin-bottom: 22px;
+    }
+
+    #chat {
+      min-height: 300px;
+      max-height: 56vh;
+      overflow-y: auto;
+      background: #1a1f2b;
+      border: 1px solid #343b4e;
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .message {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      line-height: 1.55;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+    }
+
+    .user {
+      background: #293752;
+    }
+
+    .assistant {
+      background: #252b36;
+    }
+
+    .label {
+      display: block;
+      color: #a8c6ff;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    textarea {
+      width: 100%;
+      margin-top: 14px;
+      min-height: 105px;
+      resize: vertical;
+      padding: 14px;
+      background: #1a1f2b;
+      color: white;
+      border: 1px solid #414a60;
+      border-radius: 12px;
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 18px;
+      margin-top: 10px;
+      margin-right: 7px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #send {
+      background: #d8a77c;
+      color: #17130f;
+    }
+
+    #clear {
+      background: #303747;
+      color: white;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+
+    #status {
+      color: #aeb5c8;
+      margin-top: 12px;
+      min-height: 22px;
+    }
+  </style>
+</head>
+
+<body>
+<main>
+  <h1>Claude Opus 5.5</h1>
+  <div class="subtitle">
+    Чат для программирования, Roblox и Lua
+  </div>
+
+  <div id="chat" aria-live="polite">
+    <div class="message assistant">
+      <span class="label">Помощник</span>
+      Привет! Напиши задачу, и я помогу разобраться.
+    </div>
+  </div>
+
+  <textarea id="prompt"
+    placeholder="Напиши свой вопрос..."
+    aria-label="Твой вопрос"></textarea>
+
+  <div>
+    <button id="send">Отправить</button>
+    <button id="clear">Очистить чат</button>
+  </div>
+
+  <div id="status"></div>
+</main>
+
+<script src="https://js.puter.com/v2/"></script>
+
+<script>
+(() => {
+  const chat = document.getElementById("chat");
+  const promptBox = document.getElementById("prompt");
+  const sendButton = document.getElementById("send");
+  const clearButton = document.getElementById("clear");
+  const status = document.getElementById("status");
+
+  const history = [];
+  let busy = false;
+
+  function addMessage(role, text) {
+    const bubble = document.createElement("div");
+    bubble.className = "message " + role;
+
+    const label = document.createElement("span");
+    label.className = "label";
+    label.textContent = role === "user"
+      ? "Ты"
+      : "Claude Opus 5.5";
+
+    const content = document.createElement("div");
+    content.textContent = text;
+
+    bubble.append(label, content);
+    chat.appendChild(bubble);
+    chat.scrollTop = chat.scrollHeight;
+
+    return content;
+  }
+
+  async function sendMessage() {
+    if (busy) return;
+
+    const text = promptBox.value.trim();
+    if (!text) return;
+
+    busy = true;
+    sendButton.disabled = true;
+    status.textContent = "Отправляю запрос модели...";
+    promptBox.value = "";
+
+    addMessage("user", text);
+    history.push({ role: "user", text });
+
+    const answerBox = addMessage(
+      "assistant",
+      "Думаю над ответом..."
+    );
+
+    try {
+      // Передаём историю как текст, чтобы сохранять контекст
+      // даже при использовании простого запроса к модели.
+      const transcript = history.map(item => {
+        return (item.role === "user" ? "Пользователь" : "Ассистент")
+          + ":\n" + item.text;
+      }).join("\n\n");
+
+      const response = await puter.ai.chat(
+        "Продолжай диалог на русском языке. Помогай с программированием, "
+        + "особенно Roblox Studio и Luau. Сохраняй контекст разговора.\n\n"
+        + transcript,
+        { model: "claude-opus-5-5" }
+      );
+
+      const answer = response?.message?.content
+        ?.map(part => part.text || "")
+        .filter(Boolean)
+        .join("\n")
+        || "Модель не вернула текстовый ответ.";
+
+      answerBox.textContent = answer;
+      history.push({ role: "assistant", text: answer });
+      status.textContent = "Ответ получен.";
+    } catch (error) {
+      const message = String(error?.message || error);
+      answerBox.textContent =
+        "Не удалось получить ответ.\n\n" + message;
+
+      history.pop();
+      status.textContent =
+        "Проверь подключение, доступ к Puter и доступность модели.";
+    } finally {
+      busy = false;
+      sendButton.disabled = false;
+      chat.scrollTop = chat.scrollHeight;
+      promptBox.focus();
+    }
+  }
+
+  sendButton.addEventListener("click", sendMessage);
+
+  promptBox.addEventListener("keydown", event => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage();
+    }
+  });
+
+  clearButton.addEventListener("click", () => {
+    if (busy) return;
+
+    history.length = 0;
+    chat.replaceChildren();
+    addMessage(
+      "assistant",
+      "Чат очищен. Напиши новый вопрос."
+    );
+    status.textContent = "";
+  });
+})();
+</script>
+</body>
+</html>
