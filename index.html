@@ -1,158 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#141923">
   <title>Claude Opus 5.5 — Chat</title>
-
   <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      padding: 20px 12px;
-      background: radial-gradient(circle at top, #222d42, #141923 55%, #0e1118);
-      color: #f2f4f8;
-      font-family: Inter, system-ui, sans-serif;
-    }
-
-    main {
-      width: min(900px, 100%);
-      margin: 0 auto;
-      padding: 22px;
-      border: 1px solid #343b4e;
-      border-radius: 18px;
-      background: #161b25;
-      box-shadow: 0 18px 60px #0005;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(1.5rem, 4vw, 2rem);
-    }
-
-    .subtitle {
-      color: #aeb5c8;
-      font-size: .93rem;
-      line-height: 1.5;
-      margin: 8px 0 18px;
-    }
-
-    #chat {
-      min-height: 300px;
-      max-height: 55vh;
-      overflow-y: auto;
-      padding: 14px;
-      background: #1a1f2b;
-      border: 1px solid #343b4e;
-      border-radius: 14px;
-    }
-
-    .message {
-      padding: 12px;
-      margin-bottom: 12px;
-      border-radius: 10px;
-      line-height: 1.55;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-    }
-
-    .message:last-child { margin-bottom: 0; }
-    .user { background: #293752; }
-    .assistant { background: #252b36; }
-
-    .label {
-      display: block;
-      margin-bottom: 6px;
-      color: #a8c6ff;
-      font-weight: 700;
-      font-size: .9rem;
-    }
-
-    textarea {
-      display: block;
-      width: 100%;
-      min-height: 105px;
-      margin-top: 14px;
-      padding: 14px;
-      resize: vertical;
-      background: #1a1f2b;
-      color: white;
-      border: 1px solid #414a60;
-      border-radius: 12px;
-      font: inherit;
-      outline: none;
-    }
-
-    textarea:focus { border-color: #83a8ee; }
-
-    .buttons {
-      display: flex;
-      gap: 9px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 12px 18px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    #send {
-      background: #d8a77c;
-      color: #17130f;
-    }
-
-    #clear {
-      background: #303747;
-      color: white;
-    }
-
-    button:disabled {
-      opacity: .55;
-      cursor: wait;
-    }
-
-    #status {
-      min-height: 22px;
-      margin-top: 12px;
-      color: #aeb5c8;
-      font-size: .9rem;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 600px) {
-      body { padding: 10px 7px; }
-      main { padding: 13px; }
-      #chat { min-height: 250px; padding: 9px; }
-      .message { padding: 10px; }
-      button { flex: 1; }
-    }
+    :root{color-scheme:dark;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;padding:24px 14px;background:radial-gradient(circle at top,#222d42 0,#141923 48%,#0e1118 100%);color:#f2f4f8}
+    main{width:min(900px,100%);margin:0 auto;padding:22px;border:1px solid #343b4e;border-radius:18px;background:rgba(22,27,37,.96);box-shadow:0 18px 60px #0005}
+    h1{margin:0;font-size:clamp(1.45rem,4vw,2rem);letter-spacing:-.03em}
+    .subtitle{margin:8px 0 18px;color:#aeb5c8;font-size:.94rem;line-height:1.5}
+    .topline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    .model-badge{font-size:.78rem;color:#d8e4ff;background:#263652;border:1px solid #3e547b;padding:6px 9px;border-radius:999px;white-space:normal}
+    #chat{min-height:300px;max-height:56vh;overflow-y:auto;background:#1a1f2b;border:1px solid #343b4e;border-radius:14px;padding:14px}
+    .message{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55;padding:12px;margin-bottom:12px;border-radius:10px}
+    .message:last-child{margin-bottom:0}.user{background:#293752}.assistant{background:#252b36}
+    .label{display:block;color:#a8c6ff;font-weight:700;margin-bottom:6px;font-size:.9rem}
+    textarea{width:100%;margin-top:14px;min-height:105px;resize:vertical;padding:14px;background:#1a1f2b;color:white;border:1px solid #414a60;border-radius:12px;font:inherit;line-height:1.5;outline:none}
+    textarea:focus{border-color:#83a8ee;box-shadow:0 0 0 3px #83a8ee1f}
+    .buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    button{border:0;border-radius:10px;padding:12px 18px;font:inherit;font-weight:700;cursor:pointer}
+    #send{background:#d8a77c;color:#17130f}#clear{background:#303747;color:white}
+    button:disabled{opacity:.55;cursor:wait}
+    #status{color:#aeb5c8;margin-top:12px;min-height:22px;font-size:.9rem;line-height:1.45}
+    .footnote{color:#858da1;font-size:.78rem;margin-top:12px;line-height:1.45}
+    @media(max-width:600px){body{padding:10px 8px}main{padding:14px;border-radius:14px}#chat{min-height:250px;max-height:58vh;padding:10px}.message{padding:10px}button{flex:1;padding:12px 10px}.topline{align-items:flex-start;flex-direction:column;gap:8px}}
   </style>
 </head>
-
 <body>
   <main>
-    <h1>Claude Opus 5.5</h1>
-
-    <div class="subtitle">
-      ИИ-помощник для программирования, Roblox Studio и Luau.
-      История сохраняется в этом браузере.
+    <div class="topline">
+      <div>
+        <h1>Claude Opus 5.5</h1>
+        <div class="subtitle">
+          Чат для программирования, Roblox Studio и Luau.
+          История сохраняется в этом браузере.
+          При сбое основного сервиса чат попробует резервный источник.
+        </div>
+      </div>
+      <div class="model-badge" id="modelBadge">Основная модель: Puter</div>
     </div>
 
     <div id="chat" aria-live="polite"></div>
 
-    <textarea
-      id="prompt"
+    <textarea id="prompt" maxlength="50000"
       placeholder="Напиши свой вопрос..."
-      aria-label="Твой вопрос"
-    ></textarea>
+      aria-label="Твой вопрос"></textarea>
 
     <div class="buttons">
       <button id="send">Отправить</button>
@@ -160,250 +55,379 @@
     </div>
 
     <div id="status" role="status"></div>
+    <div class="footnote">
+      Переписка хранится в браузере на этом устройстве.
+      Не отправляй пароли и API-ключи в чат.
+    </div>
   </main>
 
   <script src="https://js.puter.com/v2/"></script>
-
   <script>
-    (() => {
-      "use strict";
+  (() => {
+    "use strict";
 
-      const MODEL = "anthropic/claude-opus-5-5";
-      const STORAGE_KEY = "opus55_chat_history_v3";
-      const MAX_HISTORY = 100;
-      const CONTEXT_LENGTH = 40;
+    // После настройки Cloudflare вставь сюда адрес своего Worker
+    // с окончанием /chat.
+    const BACKUP_WORKER_URL =
+      "https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev/chat";
 
-      const chat = document.getElementById("chat");
-      const promptBox = document.getElementById("prompt");
-      const sendButton = document.getElementById("send");
-      const clearButton = document.getElementById("clear");
-      const status = document.getElementById("status");
+    const PRIMARY_MODEL = "anthropic/claude-opus-5-5";
+    const STORAGE_KEY = "opus55_chat_history_v2";
+    const MAX_HISTORY = 100;
+    const CONTEXT_MESSAGES = 24;
 
-      let busy = false;
-      let history = loadHistory();
+    const chat = document.getElementById("chat");
+    const promptBox = document.getElementById("prompt");
+    const sendButton = document.getElementById("send");
+    const clearButton = document.getElementById("clear");
+    const status = document.getElementById("status");
+    const modelBadge = document.getElementById("modelBadge");
 
-      function loadHistory() {
-        try {
-          const data = JSON.parse(
-            localStorage.getItem(STORAGE_KEY) || "[]"
-          );
+    let busy = false;
 
-          if (!Array.isArray(data)) return [];
-
-          return data
-            .filter(item =>
-              item &&
-              ["user", "assistant"].includes(item.role) &&
-              typeof item.text === "string"
-            )
-            .slice(-MAX_HISTORY);
-        } catch (_) {
-          return [];
-        }
-      }
-
-      function saveHistory() {
-        history = history.slice(-MAX_HISTORY);
-
-        try {
-          localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(history)
-          );
-        } catch (_) {
-          status.textContent =
-            "Не удалось сохранить историю в браузере.";
-        }
-      }
-
-      function addMessage(role, text) {
-        const bubble = document.createElement("div");
-        bubble.className = "message " + role;
-
-        const label = document.createElement("span");
-        label.className = "label";
-        label.textContent = role === "user"
-          ? "Ты"
-          : "Claude / ИИ";
-
-        const content = document.createElement("div");
-        content.textContent = text;
-
-        bubble.append(label, content);
-        chat.appendChild(bubble);
-        chat.scrollTop = chat.scrollHeight;
-
-        return content;
-      }
-
-      function renderHistory() {
-        chat.replaceChildren();
-
-        if (history.length === 0) {
-          addMessage(
-            "assistant",
-            "Привет! Напиши свой вопрос, и начнём."
-          );
-          return;
-        }
-
-        for (const item of history) {
-          addMessage(item.role, item.text);
-        }
-      }
-
-      function saveMessage(role, text) {
-        history.push({ role, text });
-        saveHistory();
-      }
-
-      // Главное исправление: content может быть строкой,
-      // массивом текстовых блоков или null.
-      function extractAnswer(response) {
-        const content = response?.message?.content;
-
-        if (typeof content === "string") {
-          return content.trim();
-        }
-
-        if (Array.isArray(content)) {
-          return content
-            .map(part => {
-              if (typeof part === "string") {
-                return part;
-              }
-
-              if (
-                part &&
-                typeof part.text === "string"
-              ) {
-                return part.text;
-              }
-
-              return "";
-            })
-            .filter(Boolean)
-            .join("\n")
-            .trim();
-        }
-
-        if (typeof response?.text === "string") {
-          return response.text.trim();
-        }
-
-        return "";
-      }
-
-      async function sendMessage() {
-        if (busy) return;
-
-        const text = promptBox.value.trim();
-        if (!text) return;
-
-        if (
-          typeof puter === "undefined" ||
-          !puter.ai ||
-          typeof puter.ai.chat !== "function"
-        ) {
-          status.textContent =
-            "Puter.js не загрузился. Проверь интернет и обнови страницу.";
-          return;
-        }
-
-        busy = true;
-        sendButton.disabled = true;
-        promptBox.value = "";
-
-        addMessage("user", text);
-        saveMessage("user", text);
-
-        const answerBox = addMessage(
-          "assistant",
-          "Думаю над ответом..."
+    function loadHistory() {
+      try {
+        const saved = JSON.parse(
+          localStorage.getItem(STORAGE_KEY) || "[]"
         );
 
-        status.textContent = "Отправляю запрос модели...";
+        if (!Array.isArray(saved)) return [];
 
-        try {
-          const messages = [
-            {
-              role: "system",
-              content:
-                "Ты полезный ИИ-помощник. Отвечай на русском языке. " +
-                "Особенно хорошо помогай с Roblox Studio, Luau и программированием. " +
-                "Учитывай предыдущие сообщения. При изменении кода сохраняй " +
-                "работающие функции и по возможности давай полный готовый код."
-            },
-            ...history.slice(-CONTEXT_LENGTH).map(item => ({
-              role: item.role,
-              content: item.text
-            }))
-          ];
+        return saved
+          .filter(item =>
+            item &&
+            ["user", "assistant"].includes(item.role) &&
+            typeof item.text === "string"
+          )
+          .slice(-MAX_HISTORY)
+          .map(item => ({
+            role: item.role,
+            text: item.text,
+            label: typeof item.label === "string"
+              ? item.label : ""
+          }));
+      } catch (_) {
+        return [];
+      }
+    }
 
-          const response = await puter.ai.chat(messages, {
-            model: MODEL,
-            normalize: true
-          });
+    let history = loadHistory();
 
-          const answer = extractAnswer(response);
+    function persistHistory() {
+      history = history.slice(-MAX_HISTORY);
 
-          if (!answer) {
-            throw new Error(
-              "Модель не вернула текст. Попробуй ещё раз."
-            );
-          }
+      try {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(history)
+        );
+      } catch (_) {
+        status.textContent =
+          "Не удалось сохранить историю в браузере.";
+      }
+    }
 
-          answerBox.textContent = answer;
-          saveMessage("assistant", answer);
+    function addBubble(role, text, labelOverride) {
+      const bubble = document.createElement("div");
+      bubble.className = "message " + role;
 
-          status.textContent = "Ответ получен.";
+      const label = document.createElement("span");
+      label.className = "label";
+      label.textContent =
+        labelOverride ||
+        (role === "user" ? "Ты" : "Помощник");
 
-        } catch (error) {
-          const errorText = String(
-            error?.message || error || "Неизвестная ошибка"
-          );
+      const content = document.createElement("div");
+      content.textContent = text;
 
-          answerBox.textContent =
-            "Не удалось получить ответ.\n\n" + errorText;
+      bubble.append(label, content);
+      chat.appendChild(bubble);
+      chat.scrollTop = chat.scrollHeight;
 
-          status.textContent =
-            "История сохранена. Проверь доступность модели Puter.";
+      return content;
+    }
 
-        } finally {
-          busy = false;
-          sendButton.disabled = false;
-          chat.scrollTop = chat.scrollHeight;
-          promptBox.focus();
-        }
+    function saveMessage(role, text, label) {
+      history.push({
+        role,
+        text,
+        label: label ||
+          (role === "user" ? "Ты" : "Помощник")
+      });
+
+      persistHistory();
+    }
+
+    function renderHistory() {
+      chat.replaceChildren();
+
+      if (!history.length) {
+        addBubble(
+          "assistant",
+          "Привет! Напиши задачу, и я помогу разобраться."
+        );
+        return;
       }
 
-      sendButton.addEventListener("click", sendMessage);
+      history.forEach(item =>
+        addBubble(item.role, item.text, item.label)
+      );
+    }
 
-      promptBox.addEventListener("keydown", event => {
-        if (
-          event.key === "Enter" &&
-          !event.shiftKey
-        ) {
-          event.preventDefault();
-          sendMessage();
+    // Исправление прежней ошибки .map():
+    // content может быть строкой, массивом или null.
+    function extractAnswer(response) {
+      const content = response?.message?.content;
+
+      if (typeof content === "string") {
+        return content.trim();
+      }
+
+      if (Array.isArray(content)) {
+        return content
+          .map(part => {
+            if (typeof part === "string") return part;
+
+            return part &&
+              typeof part.text === "string"
+              ? part.text
+              : "";
+          })
+          .filter(Boolean)
+          .join("\n")
+          .trim();
+      }
+
+      if (typeof response?.text === "string") {
+        return response.text.trim();
+      }
+
+      return "";
+    }
+
+    function errorText(error) {
+      return String(
+        error?.message ||
+        error?.error?.message ||
+        error ||
+        "Неизвестная ошибка"
+      ).slice(0, 700);
+    }
+
+    function buildMessages() {
+      const recent = history
+        .slice(-CONTEXT_MESSAGES)
+        .map(item => ({
+          role: item.role,
+          content: item.text
+        }));
+
+      return [
+        {
+          role: "system",
+          content:
+            "Ты полезный ИИ-помощник. Отвечай на русском. " +
+            "Помогай с программированием, Roblox Studio и Luau. " +
+            "Учитывай историю разговора. Если пользователь просит " +
+            "изменить код, по возможности выдавай полный готовый " +
+            "вариант и сохраняй работающие функции. Не утверждай, " +
+            "что ты Claude, если запрос обрабатывает другая модель."
+        },
+        ...recent
+      ];
+    }
+
+    async function askPuter(messages) {
+      if (!window.puter?.ai?.chat) {
+        throw new Error("Puter.js не загрузился.");
+      }
+
+      const response = await window.puter.ai.chat(
+        messages,
+        {
+          model: PRIMARY_MODEL,
+          normalize: true
         }
+      );
+
+      const answer = extractAnswer(response);
+
+      if (!answer) {
+        throw new Error("Puter вернул ответ без текста.");
+      }
+
+      return {
+        answer,
+        label: "Puter · Claude Opus 5.5",
+        badge: "Claude Opus 5.5 · Puter"
+      };
+    }
+
+    async function askBackup(messages) {
+      if (
+        !BACKUP_WORKER_URL ||
+        BACKUP_WORKER_URL.includes("YOUR-WORKER")
+      ) {
+        throw new Error(
+          "Резервный Worker ещё не подключён. " +
+          "Настрой Cloudflare Worker и вставь его URL " +
+          "в BACKUP_WORKER_URL в index.html."
+        );
+      }
+
+      const response = await fetch(BACKUP_WORKER_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ messages })
       });
 
-      clearButton.addEventListener("click", () => {
-        if (busy) return;
+      let data = {};
 
-        history = [];
+      try {
+        data = await response.json();
+      } catch (_) {}
 
+      if (!response.ok || data.ok === false) {
+        throw new Error(
+          data.error ||
+          ("Резервный сервис вернул HTTP " + response.status)
+        );
+      }
+
+      if (
+        typeof data.answer !== "string" ||
+        !data.answer.trim()
+      ) {
+        throw new Error(
+          "Резервная модель вернула пустой ответ."
+        );
+      }
+
+      const model = typeof data.model === "string"
+        ? data.model
+        : "openrouter/free";
+
+      return {
+        answer: data.answer.trim(),
+        label: "Резервная модель · OpenRouter",
+        badge: "Резерв: OpenRouter Free",
+        model
+      };
+    }
+
+    async function sendMessage() {
+      if (busy) return;
+
+      const text = promptBox.value.trim();
+      if (!text) return;
+
+      busy = true;
+      sendButton.disabled = true;
+      promptBox.value = "";
+
+      addBubble("user", text, "Ты");
+      saveMessage("user", text, "Ты");
+
+      const answerBox = addBubble(
+        "assistant",
+        "Подключаюсь к основной модели…",
+        "Помощник"
+      );
+
+      const messages = buildMessages();
+      let primaryError = null;
+
+      try {
         try {
-          localStorage.removeItem(STORAGE_KEY);
-        } catch (_) {}
+          status.textContent =
+            "Пробую Claude Opus 5.5 через Puter…";
 
-        renderHistory();
-        status.textContent = "История очищена.";
-      });
+          const result = await askPuter(messages);
+
+          answerBox.textContent = result.answer;
+          answerBox.parentElement
+            .querySelector(".label").textContent = result.label;
+
+          saveMessage(
+            "assistant",
+            result.answer,
+            result.label
+          );
+
+          modelBadge.textContent = result.badge;
+          status.textContent =
+            "Ответ получен от основного источника.";
+
+          return;
+        } catch (error) {
+          primaryError = errorText(error);
+          status.textContent =
+            "Puter недоступен. Переключаюсь на резервный источник…";
+          answerBox.textContent =
+            "Основной источник недоступен. Пробую OpenRouter Free…";
+        }
+
+        const backupResult = await askBackup(messages);
+
+        answerBox.textContent = backupResult.answer;
+        answerBox.parentElement
+          .querySelector(".label").textContent = backupResult.label;
+
+        saveMessage(
+          "assistant",
+          backupResult.answer,
+          backupResult.label + " (" + backupResult.model + ")"
+        );
+
+        modelBadge.textContent = backupResult.badge;
+        status.textContent =
+          "Ответ получен через резервный OpenRouter. Модель: " +
+          backupResult.model;
+
+      } catch (backupError) {
+        const backupMessage = errorText(backupError);
+
+        answerBox.textContent =
+          "Не удалось получить ответ. История сохранена.\n\n" +
+          "Основной источник: " + (primaryError || "не использовался") +
+          "\nРезервный источник: " + backupMessage;
+
+        status.textContent =
+          "Проверь Worker, API-ключ в секретах Cloudflare и лимиты сервиса.";
+      } finally {
+        busy = false;
+        sendButton.disabled = false;
+        chat.scrollTop = chat.scrollHeight;
+        promptBox.focus();
+      }
+    }
+
+    sendButton.addEventListener("click", sendMessage);
+
+    promptBox.addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+
+    clearButton.addEventListener("click", () => {
+      if (busy) return;
+
+      history = [];
+
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (_) {}
 
       renderHistory();
-    })();
+      status.textContent = "История очищена.";
+    });
+
+    renderHistory();
+  })();
   </script>
 </body>
 </html>
